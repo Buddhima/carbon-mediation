@@ -44,7 +44,4 @@ public class MediationDataPublisherConstants {
     public static final String COMPONENT_STREAM_NAME = "esb-flow_tracer-component-entry-stream";
     public static final String COMPONENT_STREAM_VERSION = "1.0.0";
 
-    public static final String TRACE_STREAM_NAME = "esb-flow_tracer-trace-entry-stream";
-    public static final String TRACE_STREAM_VERSION = "1.0.0";
-
 }

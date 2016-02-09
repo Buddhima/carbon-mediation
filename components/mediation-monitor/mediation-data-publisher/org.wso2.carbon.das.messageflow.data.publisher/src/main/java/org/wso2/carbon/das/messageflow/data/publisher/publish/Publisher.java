@@ -21,7 +21,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.messageflowtracer.data.MessageFlowComponentEntry;
 import org.apache.synapse.messageflowtracer.data.MessageFlowDataEntry;
-import org.apache.synapse.messageflowtracer.data.MessageFlowTraceEntry;
 import org.wso2.carbon.das.data.publisher.util.DASDataPublisherConstants;
 import org.wso2.carbon.das.data.publisher.util.PublisherUtil;
 import org.wso2.carbon.das.messageflow.data.publisher.conf.EventPublisherConfig;
@@ -60,10 +59,6 @@ public class Publisher {
                 if (dataEntry instanceof MessageFlowComponentEntry) {
                     addEventData(eventData, (MessageFlowComponentEntry) dataEntry);
                     StreamDefinition streamDef = getComponentStreamDefinition(metaDataKeyList.toArray());
-                    publishToAgent(eventData, metaDataValueList, mediationStatConfig, streamDef);
-                } else if (dataEntry instanceof MessageFlowTraceEntry) {
-                    addEventData(eventData, (MessageFlowTraceEntry) dataEntry);
-                    StreamDefinition streamDef = getTraceStreamDefinition(metaDataKeyList.toArray());
                     publishToAgent(eventData, metaDataValueList, mediationStatConfig, streamDef);
                 } else {
                     log.error("Invalid entry type for update.");
@@ -104,13 +99,6 @@ public class Publisher {
         eventData.add(JSONObject.toJSONString(traceComponentData.getPropertyMap()));
         eventData.add(JSONObject.toJSONString(traceComponentData.getTransportPropertyMap()));
     }
-
-    private static void addEventData(List<Object> eventData, MessageFlowTraceEntry traceData) {
-        eventData.add(traceData.getMessageId());
-        eventData.add(traceData.getTimestamp());
-        eventData.add(traceData.getEntryType());
-    }
-
 
     private static void publishToAgent(List<Object> eventData,
                                        List<String> metaDataValueList,
@@ -216,24 +204,4 @@ public class Publisher {
         return eventStreamDefinition;
     }
 
-    public static StreamDefinition getTraceStreamDefinition(
-            Object[] metaData)
-            throws MalformedStreamDefinitionException {
-        StreamDefinition eventStreamDefinition = new StreamDefinition(
-                MediationDataPublisherConstants.TRACE_STREAM_NAME,
-                MediationDataPublisherConstants.TRACE_STREAM_VERSION);
-        eventStreamDefinition.setNickName("");
-        eventStreamDefinition.setDescription("This stream is use by WSO2 ESB to publish trace specific data for tracing");
-        eventStreamDefinition.addMetaData(DASDataPublisherConstants.DAS_HOST, AttributeType.STRING);
-        for (int i = 0; i < metaData.length; i++) {
-            eventStreamDefinition.addMetaData(metaData[i].toString(), AttributeType.STRING);
-        }
-        eventStreamDefinition.addPayloadData(MediationDataPublisherConstants.MESSAGE_ID,
-                                             AttributeType.STRING);
-        eventStreamDefinition.addPayloadData(MediationDataPublisherConstants.TRACE_TIMESTAMP,
-                                             AttributeType.LONG);
-        eventStreamDefinition.addPayloadData(MediationDataPublisherConstants.ENTRY_TYPE,
-                                             AttributeType.STRING);
-        return eventStreamDefinition;
-    }
 }
