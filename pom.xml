@@ -317,7 +317,7 @@
                 <version>${httpcore.wso2.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.httpcomponents.wso2</groupId>
+                <groupId>org.wso2.orbit.org.apache.httpcomponents</groupId>
                 <artifactId>httpcore-nio</artifactId>
                 <version>${httpcore.nio.wso2.version}</version>
             </dependency>
